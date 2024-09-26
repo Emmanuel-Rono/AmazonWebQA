@@ -1,16 +1,19 @@
-import time
-from selenium import webdriver
-from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
 import pickle
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys  # Correct import
+
+
 def test_Amazon_Search():
-    # initialise Chrome Driver
+    # Initialize Chrome Driver
     driver = webdriver.Chrome()
+
+    # Set implicit wait only once
+    driver.implicitly_wait(5)
 
     # Open Amazon
     driver.get('https://www.amazon.com/')
-    driver.implicitly_wait(5)
 
     # Load cookies if you've already saved them
     try:
@@ -18,28 +21,26 @@ def test_Amazon_Search():
             cookies = pickle.load(file)
             for cookie in cookies:
                 driver.add_cookie(cookie)
+        # Refresh the page to apply cookies
+        driver.get('https://www.amazon.com/')
     except FileNotFoundError:
         print("Cookies file not found. Make sure to log in and save cookies first.")
 
-        # Refresh the page to apply cookies
-        driver.get('https://www.amazon.com/')
-        driver.implicitly_wait(5)
+    # Perform the search
+    search = driver.find_element(By.ID, 'twotabsearchtextbox')
+    search.send_keys('monitor', Keys.ENTER)
 
-        # Perform the search
-        search = driver.find_element(By.ID, 'twotabsearchtextbox')
-        search.send_keys('monitor', Keys.ENTER)
+    # Verify if the expected text is in search result
+    expected_text = '"monitor"'
+    actual_text = driver.find_element(By.XPATH, "//span[@class='a-color-state a-text-bold']").text
 
-        # more verification
-        expected_text = '"monitor"'
-        actual_text = driver.find_element(By.XPATH, "//span[@class='a-color-state a-text-bold']").text
-
-        # is it okay
-        assert expected_text == actual_text, f'Error, Expected text{expected_text}, actual text{actual_text}'
-
-        # Keep the browser open
-        input("Press Enter to close the browser...")
-
-        # Close the driver
-        driver.quit()
+    # Perform assertion
+    assert expected_text == actual_text, f'Error: Expected text {expected_text}, but got {actual_text}'
 
 
+
+    # Close the driver
+    driver.quit()
+
+# Call the function to execute
+test_Amazon_Search()
