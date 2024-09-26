@@ -34,6 +34,20 @@ class TestAmazon:
         # Perform assertion
         assert expected_text == actual_text, f'Error: Expected text {expected_text}, but got {actual_text}'
 
+    def test_amazon_search_laptop(self):
+
+            # Perform the search
+            search_box = self.driver.find_element(By.ID, 'twotabsearchtextbox')  # Accessing driver instance
+            search_box.send_keys('laptop', Keys.ENTER)  # Perform search
+
+            # Verify if the expected text is in the search result
+            expected_text = '"laptop"'
+            actual_text = self.driver.find_element(By.XPATH,
+                                                   "//span[@class='a-color-state a-text-bold']").text  # Accessing driver instance
+
+            # Perform assertion
+            assert expected_text == actual_text, f'Error: Expected text {expected_text}, but got {actual_text}'
+
     def teardown_method(self):
         # Close the driver after the test
         self.driver.quit()
