@@ -21,10 +21,17 @@ class TestAmazon_for_Empty_Cart:
                     self.driver.add_cookie(cookie)  # Use self to access driver
 
             self.driver.get('https://www.amazon.com/')  # Refresh the page to apply cookies
+
+
+            actual_text = str(self.driver.find_element(By.XPATH, "//div[@id='nav-cart-count-container']/span[@id='nav-cart-count']").text)
+            expected_text = "0"
+            assert expected_text == actual_text, f"Expected text: '{expected_text}, but got {actual_text}'"
+
+
             self.driver.find_element(By.ID, 'nav-cart').click()
-            actual_text = self.driver.find_element(By.XPATH, "//div[@id='sc-empty-cart']//h3").text
-            expected_text = "Your Amazon Cart is empty"
-            assert expected_text == actual_text, f'Error: Expected text {expected_text}, but got {actual_text}'
+            actual_cart_empty_text = self.driver.find_element(By.XPATH, "//div[@id='sc-empty-cart']//h3").text
+            expected__empty_text = "Your Amazon Cart is empty"
+            assert expected_text == actual_text, f"Expected text: '{expected__empty_text}, but got {actual_cart_empty_text}'"
 
 
 
